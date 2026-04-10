@@ -1,6 +1,5 @@
 import psycopg2
 
-# Параметры подключения к базе данных
 conn_params = {
     'host': 'localhost',
     'database': 'Practice',
@@ -14,7 +13,6 @@ def create_tables():
         conn = psycopg2.connect(**conn_params)
         cur = conn.cursor()
 
-        # Создание таблицы roles, если не существует
         cur.execute("""
             CREATE TABLE IF NOT EXISTS roles (
                 id SERIAL PRIMARY KEY,
@@ -22,7 +20,6 @@ def create_tables():
             );
         """)
 
-        # Создание таблицы users, если не существует
         cur.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -34,11 +31,9 @@ def create_tables():
             );
         """)
 
-        # Вставка ролей, если они отсутствуют
         cur.execute("INSERT INTO roles (role_name) VALUES ('admin') ON CONFLICT (role_name) DO NOTHING;")
         cur.execute("INSERT INTO roles (role_name) VALUES ('user') ON CONFLICT (role_name) DO NOTHING;")
 
-        # Вставка админа, если отсутствует
         cur.execute("""
             INSERT INTO users (login, password, role_id)
             SELECT 'admin', 'admin123', r.id
